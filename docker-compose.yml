@@ -1,0 +1,26 @@
+services:
+  qwen-server:
+    build: .
+    image: qwen-server:latest
+    container_name: qwen-server
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HF_HOME=/opt/huggingface
+    ports:
+      - "8090:8090"
+    volumes:
+      - qwen-huggingface:/opt/huggingface
+    shm_size: 8gb
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  qwen-huggingface:
